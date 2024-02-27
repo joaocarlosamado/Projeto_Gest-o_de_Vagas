@@ -26,7 +26,7 @@ public class CandidateEntity {
 
     // não permitir usa espaço
     @NotBlank
-    @Pattern(regexp = "(/\\b(\\s)\\b/g)", message = "O campo [username] não deve conter espaço") // expressao regular
+    @Pattern(regexp = "\\S+", message = "O campo [username] não deve conter espaço") // expressao regular
     private String username;
 
     @Email(message = "O Campo [email] deve conter um e-mail válido")
