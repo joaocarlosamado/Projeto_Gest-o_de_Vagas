@@ -8,9 +8,14 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 public class SecurityConfig {
 
-    @Bean //serve para sobrescrever o security 
-    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
-        http.csrf(csrf -> csrf.disable());
+    @Bean // serve para sobrescrever o security
+    SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http.csrf(csrf -> csrf.disable())
+                .authorizeHttpRequests(auth -> {
+                    // rotas quer pode ter premissao
+                    auth.requestMatchers("/candidate/").permitAll().requestMatchers("/company/").permitAll();
+                    auth.anyRequest().authenticated();// e as demais vai precisa
+                });
         return http.build();
     }
 }
