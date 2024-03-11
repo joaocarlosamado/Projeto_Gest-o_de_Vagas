@@ -15,14 +15,16 @@ public class SecurityConfig {
         http.csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> {
                     // rotas quer pode ter premissao
-                    auth.requestMatchers("/candidate/").permitAll().requestMatchers("/company/").permitAll();
+                    auth.requestMatchers("/candidate/")
+                            .permitAll().requestMatchers("/company/").permitAll()
+                            .requestMatchers("/auth/company").permitAll();
                     auth.anyRequest().authenticated();// e as demais vai precisa
                 });
         return http.build();
     }
 
     @Bean
-    public PasswordEncoder passwordEncoder(){
+    public PasswordEncoder passwordEncoder() {
 
         return new BCryptPasswordEncoder();
     }
