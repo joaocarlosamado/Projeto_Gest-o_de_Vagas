@@ -16,7 +16,6 @@ import com.auth0.jwt.algorithms.Algorithm;
 
 import br.com.joaocarlos.gestao_de_vagas.modules.company.dto.AuthCompanyDTO;
 import br.com.joaocarlos.gestao_de_vagas.modules.company.repositories.CompanyRepository;
-import jakarta.validation.Valid;
 
 @Service
 public class AuthCompanyUseCase {
