@@ -24,22 +24,22 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class JobEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
-    private String description;
-    private String benefits;
+  @Id
+  @GeneratedValue(strategy = GenerationType.UUID)
+  private UUID id;
+  private String description;
+  private String benefits;
 
-    @NotBlank(message = "Esse campo é obrigatório")
-    private String level;
+  @NotBlank(message = "Esse campo é obrigatório")
+  private String level;
 
-    @ManyToOne()
-    @JoinColumn(name = "company_id", insertable = false, updatable = false)
-    private CompanyEntity companyEntity;
+  @ManyToOne()
+  @JoinColumn(name = "company_id", insertable = false, updatable = false)
+  private CompanyEntity companyEntity;
 
-    @Column(name = "company_id")
-    private UUID companyId;
+  @Column(name = "company_id", nullable = false)
+  private UUID companyId;
 
-    @CreationTimestamp
-    private LocalDateTime createdAt;
+  @CreationTimestamp
+  private LocalDateTime createdAt;
 }

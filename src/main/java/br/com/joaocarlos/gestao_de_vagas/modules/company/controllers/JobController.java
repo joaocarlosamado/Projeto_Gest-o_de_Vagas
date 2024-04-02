@@ -17,22 +17,20 @@ import jakarta.validation.Valid;
 @RestController
 @RequestMapping("/job")
 public class JobController {
-    
-    @Autowired
-    private CreateJobUseCase createJobUseCase;
+  @Autowired
+  private CreateJobUseCase createJobUseCase;
 
-    @PostMapping("/")
-    public JobEntity create(@Valid @RequestBody CreateJobDTO createJobDTO, HttpServletRequest request){
-        var companyId = request.getAttribute("company_id");//recuperando getattribute
-                
-        var jobEntity = JobEntity.builder()
+  @PostMapping("/")
+  public JobEntity create(@Valid @RequestBody CreateJobDTO createJobDTO, HttpServletRequest request) {
+    var companyId = request.getAttribute("company_id");
+
+    var jobEntity = JobEntity.builder()
         .benefits(createJobDTO.getBenefits())
         .companyId(UUID.fromString(companyId.toString()))
         .description(createJobDTO.getDescription())
         .level(createJobDTO.getLevel())
         .build();
 
-        return this.createJobUseCase.execute(jobEntity);
-    }
-    
+    return createJobUseCase.execute(jobEntity);
+  }
 }

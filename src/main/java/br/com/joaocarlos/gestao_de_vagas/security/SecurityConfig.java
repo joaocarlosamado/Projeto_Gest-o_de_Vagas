@@ -15,25 +15,22 @@ public class SecurityConfig {
     @Autowired
     private SecurityFilter securityFilter;
 
-    @Bean // serve para sobrescrever o security
+    @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(auth -> {
-                    // rotas quer pode ter premissao
-                    auth.requestMatchers("/candidate/")
-                            .permitAll().requestMatchers("/company/").permitAll()
-                            .requestMatchers("/auth/company").permitAll();
-                    auth.anyRequest().authenticated();// e as demais vai precisa
-                })
-                .addFilterBefore(securityFilter, BasicAuthenticationFilter.class)
+        .authorizeHttpRequests(auth -> {
+        auth.requestMatchers("/candidate/").permitAll()
+            .requestMatchers("/company/").permitAll()
+            .requestMatchers("/auth/company").permitAll();
+        auth.anyRequest().authenticated();
+    })
+    .addFilterBefore(securityFilter, BasicAuthenticationFilter.class);
 
-        ;
-        return http.build();
-    }
+    return http.build();
+}
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-
-        return new BCryptPasswordEncoder();
-    }
+@Bean
+public PasswordEncoder passwordEncoder() {
+    return new BCryptPasswordEncoder();
+}
 }

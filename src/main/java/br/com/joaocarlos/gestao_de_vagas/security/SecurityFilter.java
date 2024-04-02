@@ -18,32 +18,31 @@ import jakarta.servlet.http.HttpServletResponse;
 @Component
 public class SecurityFilter extends OncePerRequestFilter {
 
+
     @Autowired
     private JWTProvider jwtProvider;
 
-    @Override
-    protected void doFilterInternal(HttpServletRequest request,
-            HttpServletResponse response,
-            FilterChain filterChain)
-            throws ServletException, IOException {
-
+        @Override
+        protected void doFilterInternal(HttpServletRequest request,
+        HttpServletResponse response,
+        FilterChain filterChain)
+            throws ServletException, IOException{
         SecurityContextHolder.getContext().setAuthentication(null);
+            String header = request.getHeader("Authorization");
 
-        String header = request.getHeader("Authorization");
-        System.out.println(header);
-        if (header != null) {
+        if(header != null) {
             var subjectToken = this.jwtProvider.validateToken(header);
-            if (subjectToken.isEmpty()) {
+            if(subjectToken.isEmpty()) {
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 return;
             }
             request.setAttribute("company_id", subjectToken);
             UsernamePasswordAuthenticationToken auth = 
-            new UsernamePasswordAuthenticationToken(subjectToken, null,Collections.emptyList());
+            new UsernamePasswordAuthenticationToken(subjectToken, null,
+                    Collections.emptyList());
             SecurityContextHolder.getContext().setAuthentication(auth);
         }
+            filterChain.doFilter(request, response);
+        }
 
-        filterChain.doFilter(request, response);
     }
-
-}
