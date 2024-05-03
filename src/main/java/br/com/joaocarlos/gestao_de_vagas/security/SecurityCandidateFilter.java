@@ -1,10 +1,14 @@
 package br.com.joaocarlos.gestao_de_vagas.security;
 
 import java.io.IOException;
+import java.util.Collection;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
+
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import br.com.joaocarlos.gestao_de_vagas.providers.JWTCandidateProvider;
@@ -27,19 +31,30 @@ public class SecurityCandidateFilter extends OncePerRequestFilter {
     String header = request.getHeader("Authorization");
 
     if (request.getRequestURI().startsWith("/candidate")) {
-      if (header != null) {
-        var token = this.jwtProvider.validateToken(header);
 
-        if (token == null) {
-          response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-          return;
+      if (request.getRequestURI().startsWith("/candidate")) {
+        if (header != null) {
+          var token = this.jwtProvider.validateToken(header);
+
+          if (token == null) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
+          }
+
+          request.setAttribute("candidate_id", token.getSubject());
+          var roles = token.getClaim("roles").asList(Object.class);
+
+          var grants = roles.stream()
+              .map(
+                  role -> new SimpleGrantedAuthority(role.toString()))
+              .toList();
+
+          UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(token.getSubject(), null,
+              grants);
+          SecurityContextHolder.getContext().setAuthentication(auth);
         }
 
-        request.setAttribute("candidate_id", token.getSubject());
-        System.out.println("===== TOKEN =====");
-        System.out.println(token);
       }
-
     }
 
     filterChain.doFilter(request, response);
